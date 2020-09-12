@@ -87,50 +87,50 @@ public class FlowPanel extends JPanel implements Runnable {
 		int numThreads = 4;
 		int workingSize = linearPermListSize/numThreads;
 
-		FlowController firstQuarter = new FlowController(land, water, 0, workingSize);
-		FlowController secondQuarter = new FlowController(land, water, workingSize, 2*workingSize);
-		FlowController thirdQuarter = new FlowController(land, water, 2*workingSize, 3*workingSize);
-		FlowController fourthQuarter = new FlowController(land, water, 3*workingSize, linearPermListSize);
+		FlowController.mounTerrain = land;
+		FlowController.water = water;
+
+		FlowController firstQuarter = new FlowController(0, workingSize);
+		FlowController secondQuarter = new FlowController(workingSize, 2*workingSize);
+		FlowController thirdQuarter = new FlowController(2*workingSize, 3*workingSize);
+		FlowController fourthQuarter = new FlowController(3*workingSize, linearPermListSize);
 
 		boolean firstRun = true;
 
 		repaint();
-		while(true){
-			if(play){
-				repaint();
+		try{
+			while(true){
+				if(play){
 
-				if(firstRun && !resumePossible){
 					firstQuarter.start();
 					secondQuarter.start();
 					thirdQuarter.start();
 					fourthQuarter.start();
-					firstRun = false;
-				} else if(resumePossible){
-					firstQuarter.notify();
-					secondQuarter.notify();
-					thirdQuarter.notify();
-					fourthQuarter.notify();
 
-					resumePossible = false;
-				}
+					firstQuarter.join();
+					secondQuarter.join();
+					thirdQuarter.join();
+					fourthQuarter.join();
 
-			} else if(!play && !resumePossible){
-				/*try{
+					repaint();
+
+				} else if(!play && !resumePossible && !firstRun){
+					
 					firstQuarter.wait();
 					secondQuarter.wait();
 					thirdQuarter.wait();
 					fourthQuarter.wait();
 
 					resumePossible = true;
-				}catch(InterruptedException e){
-					System.err.println(e);
-				}*/
+					
+				}
+				
+				if(exit){
+					return;
+				}
 			}
-			
-			if(exit){
-				return;
-			}
+		} catch(InterruptedException e){
+			System.err.println(e);
 		}
-	    
 	}
 }
