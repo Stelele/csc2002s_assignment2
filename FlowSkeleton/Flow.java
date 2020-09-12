@@ -1,10 +1,11 @@
 package FlowSkeleton;
 
 import javax.swing.*;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.BorderLayout;
 
 public class Flow {
@@ -23,7 +24,7 @@ public class Flow {
 		return (System.currentTimeMillis() - startTime) / 1000.0f; 
 	}
 	
-	public static void setupGUI(int frameX,int frameY,Terrain landdata) {
+	public static void setupGUI(int frameX,int frameY,Terrain landdata, Water waterData) {
 		
 		Dimension fsize = new Dimension(800, 800);
     	JFrame frame = new JFrame("Waterflow"); 
@@ -33,23 +34,66 @@ public class Flow {
       	JPanel g = new JPanel();
         g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
    
-		fp = new FlowPanel(landdata);
+		landdata.genPermute();
+
+		fp = new FlowPanel(landdata, waterData);
 		fp.setPreferredSize(new Dimension(frameX,frameY));
 		g.add(fp);
 	    
 		// to do: add a MouseListener, buttons and ActionListeners on those buttons
 	   	
 		JPanel b = new JPanel();
-	    b.setLayout(new BoxLayout(b, BoxLayout.LINE_AXIS));
+		b.setLayout(new BoxLayout(b, BoxLayout.LINE_AXIS));
+		
+		//Reset Button and Pressed Event
+		JButton resetB = new JButton("Reset");
+		resetB.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				fp.clearWater();
+				System.out.println("reset clicked");
+			}
+		});
+
+		//Pause Button and pressed Event
+		JButton pauseB = new JButton("Pause");
+		pauseB.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				fp.pauseSimulation();
+				System.out.println("Pause clicked");
+			}
+		});
+
+		//Play Button and Pressed Event
+		JButton playB = new JButton("Play");
+		playB.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				fp.playSimulation();
+				System.out.println("Play clicked");
+			}
+		});
+
+		//end Button and Pressed Event
 		JButton endB = new JButton("End");
-		// add the listener to the jbutton to handle the "pressed" event
 		endB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				// to do ask threads to stop
+				fp.exitSimulation();
 				frame.dispose();
 			}
 		});
 		
+		//Mouse Clicked Event Listener
+		g.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e){
+				fp.addWater(e.getX(), e.getY());
+				System.out.println(String.format("Mouse pressed col:%d, row:%d", e.getX(), e.getY()));
+			}
+		});
+		
+		b.add(resetB);
+		b.add(pauseB);
+		b.add(playB);
 		b.add(endB);
 		g.add(b);
     	
@@ -59,13 +103,13 @@ public class Flow {
         frame.setContentPane(g);
         frame.setVisible(true);
         Thread fpt = new Thread(fp);
-        fpt.start();
+		fpt.start();
 	}
 	
 		
 	public static void main(String[] args) {
 		Terrain landdata = new Terrain();
-		
+
 		// check that number of command line arguments is correct
 		if(args.length != 1)
 		{
@@ -74,13 +118,17 @@ public class Flow {
 		}
 				
 		// landscape information from file supplied as argument
-		// 
 		landdata.readData(args[0]);
 		
 		frameX = landdata.getDimX();
 		frameY = landdata.getDimY();
-		SwingUtilities.invokeLater(()->setupGUI(frameX, frameY, landdata));
+
+		Water waterdata = new Water(frameX, frameY);
+
+		SwingUtilities.invokeLater(()->setupGUI(frameX, frameY, landdata, waterdata));
 		
 		// to do: initialise and start simulation
+		
+
 	}
 }
