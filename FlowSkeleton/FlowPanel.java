@@ -7,8 +7,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JPanel;
 
 public class FlowPanel extends JPanel implements Runnable {
-	Terrain land;
-	Water water; 
+	volatile Terrain land;
+	volatile Water water; 
 	boolean play;
 	boolean reset;
 	boolean exit;
@@ -42,7 +42,7 @@ public class FlowPanel extends JPanel implements Runnable {
 		int sizes = width * height; 
 	
 		for(int i = 0; i < sizes; i++){
-			land.locate(i, location);
+			land.getPermute(i, location);
 
 			if(water.getDepth(location[0], location[1]) > 0){				
 				g.fillRect(location[0], location[1], 1, 1);
@@ -87,50 +87,38 @@ public class FlowPanel extends JPanel implements Runnable {
 		int numThreads = 4;
 		int workingSize = linearPermListSize/numThreads;
 
-		FlowController firstQuarter = new FlowController(land, water, 0, workingSize);
-		FlowController secondQuarter = new FlowController(land, water, workingSize, 2*workingSize);
-		FlowController thirdQuarter = new FlowController(land, water, 2*workingSize, 3*workingSize);
-		FlowController fourthQuarter = new FlowController(land, water, 3*workingSize, linearPermListSize);
+		FlowController.mounTerrain = land;
+		FlowController.water = water;
+
+		
 
 		boolean firstRun = true;
 
 		repaint();
-		while(true){
-			if(play){
-				repaint();
+		try{
+			while(!exit){
+				if(play){
+					FlowController firstQuarter = new FlowController( 0, workingSize);
+					FlowController secondQuarter = new FlowController(workingSize, 2*workingSize);
+					FlowController thirdQuarter = new FlowController(2*workingSize, 3*workingSize);
+					FlowController fourthQuarter = new FlowController(3*workingSize, linearPermListSize);
 
-				if(firstRun && !resumePossible){
 					firstQuarter.start();
 					secondQuarter.start();
 					thirdQuarter.start();
 					fourthQuarter.start();
-					firstRun = false;
-				} else if(resumePossible){
-					firstQuarter.notify();
-					secondQuarter.notify();
-					thirdQuarter.notify();
-					fourthQuarter.notify();
+					
+					firstQuarter.join();
+					secondQuarter.join();
+					thirdQuarter.join();
+					fourthQuarter.join();
 
-					resumePossible = false;
+					repaint();
+				
 				}
-
-			} else if(!play && !resumePossible){
-				/*try{
-					firstQuarter.wait();
-					secondQuarter.wait();
-					thirdQuarter.wait();
-					fourthQuarter.wait();
-
-					resumePossible = true;
-				}catch(InterruptedException e){
-					System.err.println(e);
-				}*/
 			}
-			
-			if(exit){
-				return;
-			}
+		} catch(InterruptedException e){
+			System.err.println(e);
 		}
-	    
 	}
 }

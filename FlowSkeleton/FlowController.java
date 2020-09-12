@@ -1,24 +1,34 @@
 package FlowSkeleton;
 
 public class FlowController extends Thread {
-    Terrain mounTerrain;
-    Water water;
+    static volatile Terrain mounTerrain;
+    static volatile Water water;
+    static volatile boolean runSimulation;
+
     int startPos;
     int endPos;
 
-    FlowController(Terrain mounTerrain, Water water, int startPos, int endPos){
-        this.mounTerrain = mounTerrain;
-        this.water = water;
+    FlowController(int startPos, int endPos){
         this.startPos = startPos;
         this.endPos = endPos;
+        runSimulation = false;
     }
 
-    public synchronized void moveWater(int[] location){
-        float minDepth = (water.getDepth(location[0], location[1])/100f) + mounTerrain.height[location[0]][location[1]];
-        int[] minDepthLocation = location;
+    public void moveWater(int[] location){
+        if(water.getDepth(location[0], location[1]) <= 0)
+            return;
 
-        for(int i = location[0]-1; i <= location[0]+1; i++){
-            for(int j = location[1]-1; j <= location[1]+1; j++){
+        float minDepth = (water.getDepth(location[0], location[1])/100f) + mounTerrain.height[location[0]][location[1]];
+        int[] minDepthLocation = {location[0], location[1]};
+
+        int xStart = location[0] -1;
+        int xEnd = location[0] + 1;
+
+        int yStart = location[1] - 1;
+        int yEnd = location[1] + 1;
+
+        for(int i = xStart; i <= xEnd; i++){
+            for(int j = yStart; j <= yEnd; j++){
                 float waterDepth = (water.getDepth(i, j)/100f) + mounTerrain.height[i][j];
 
                 if(minDepth > waterDepth){
@@ -41,12 +51,10 @@ public class FlowController extends Thread {
     public void run(){
         int[] location = new int[2];
 
-        while(true){
-            for(int i = startPos; i < endPos; i++){
-                mounTerrain.locate(i, location);
+        for(int i = startPos; i < endPos; i++){
+            mounTerrain.getPermute(i, location);
 
-                moveWater(location);
-            }
+            moveWater(location);
         }
     }
 }
