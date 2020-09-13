@@ -1,9 +1,8 @@
 package FlowSkeleton;
 
 public class FlowController extends Thread {
-    static volatile Terrain mounTerrain;
-    static volatile Water water;
-    static volatile boolean runSimulation;
+    static Terrain mounTerrain;
+    static Water water;
 
     int startPos;
     int endPos;
@@ -11,7 +10,6 @@ public class FlowController extends Thread {
     FlowController(int startPos, int endPos){
         this.startPos = startPos;
         this.endPos = endPos;
-        runSimulation = false;
     }
 
     public void moveWater(int[] location){
@@ -48,6 +46,7 @@ public class FlowController extends Thread {
             water.incrementDepth(minDepthLocation[0], minDepthLocation[1]);
     }
 
+    @Override
     public void run(){
         int[] location = new int[2];
 

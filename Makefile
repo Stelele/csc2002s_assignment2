@@ -4,7 +4,7 @@
 
 # The top level directory
 .SUFFIXES: .java .class
-SRCDIR=src
+SRCDIR=FlowSkeleton
 BINDIR=bin
 OUTDIR=output
 OUTDOCS=docs
@@ -13,6 +13,8 @@ $(BINDIR)/%.class:$(SRCDIR)/%.java
 	javac -d $(BINDIR)/ -cp $(BINDIR) $<
 	
 CLASSES=Terrain.class \
+		Water.class \
+		FlowController.class \
 		FlowPanel.class \
 		Flow.class
 

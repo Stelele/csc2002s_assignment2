@@ -2,23 +2,18 @@ package FlowSkeleton;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.JPanel;
 
 public class FlowPanel extends JPanel implements Runnable {
-	volatile Terrain land;
-	volatile Water water; 
-	boolean play;
-	boolean reset;
-	boolean exit;
-	boolean resumePossible;
+	Terrain land;
+	Water water; 
+	private boolean play;
+	private boolean exit;
 	
 	FlowPanel(Terrain terrain, Water waterData) {
 		land = terrain;
 		water = waterData;
-		play = false;
-		resumePossible = false;
 
 	}
 		
@@ -36,6 +31,7 @@ public class FlowPanel extends JPanel implements Runnable {
 			g.drawImage(land.getImage(), 0, 0, null);
 		}
 
+		//draw blue boxes ontop reprsenting water
 		g.setColor(Color.BLUE);
 		int[] location = new int[2];
 
@@ -80,19 +76,13 @@ public class FlowPanel extends JPanel implements Runnable {
 	}
 
 	public void run() {	
-		// display loop here
-		// to do: this should be controlled by the GUI
-		// to allow stopping and starting
+
 		int linearPermListSize = land.dim();
 		int numThreads = 4;
 		int workingSize = linearPermListSize/numThreads;
 
 		FlowController.mounTerrain = land;
 		FlowController.water = water;
-
-		
-
-		boolean firstRun = true;
 
 		repaint();
 		try{
