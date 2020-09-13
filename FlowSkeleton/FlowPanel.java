@@ -4,20 +4,41 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.concurrent.ForkJoinPool;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class FlowPanel extends JPanel implements Runnable {
 	Terrain land;
 	Water water; 
+	JLabel timelapsed;
+
 	private boolean play;
 	private boolean exit;
+	private boolean pauseClicked;
+
+	static long startTime;
+	float timeBeforePause;
 
 	static final ForkJoinPool fjpool = new ForkJoinPool();
 	
-	FlowPanel(Terrain terrain, Water waterData) {
+	FlowPanel(Terrain terrain, Water waterData, JLabel timelapsed) {
 		land = terrain;
 		water = waterData;
+		exit = false;
+		this.timelapsed = timelapsed;
 
+		timeBeforePause = 0f;
+		pauseClicked = false;
+	}
+
+	// start timer
+	private static void tick(){
+		startTime = System.currentTimeMillis();
+	}
+	
+	// stop timer, return time elapsed in seconds
+	private static float tock(){
+		return (System.currentTimeMillis() - startTime) / 1000.0f; 
 	}
 		
 	// responsible for painting the terrain and water
@@ -39,27 +60,38 @@ public class FlowPanel extends JPanel implements Runnable {
 		WaterPainter.land = land;
 		WaterPainter.water = water;
 
-		fjpool.invoke(new WaterPainter(0, land.dim())) 
+		fjpool.invoke(new WaterPainter(0, land.dim()));
 	}
 
 	public void pauseSimulation(){
 		play = false;
+		pauseClicked = true;
 	}
 
 	public void playSimulation(){
+		tick();
 		play = true;
 	}
 
 	public void exitSimulation(){
 		exit = true;
 	}
+
+	public void resetSimulation(){
+		tick();
+		timeBeforePause = 0f;
+
+		timelapsed.setText("Time: 0.00s");
+		water.clearWater();
+		repaint();
+	}
 	
 	public void addWater(int x, int y){
-		int width = getWidth();
-		int height = getHeight();
+		int width = land.getDimX();
+		int height = land.getDimY();
 		for(int i = x-5; i < x+5; i++){
 			for(int j = y-5; j < y+5; j++){
-				if(i < width && j < height)
+				if(i < width && j < height && i>=0 && j>=0)
 					water.incrementDepth(i, j);
 			}
 		}
@@ -99,9 +131,17 @@ public class FlowPanel extends JPanel implements Runnable {
 					thirdQuarter.join();
 					fourthQuarter.join();
 
+					timelapsed.setText(String.format("Time: %.2fs", tock() + timeBeforePause));
+
 					repaint();
 				
 				}
+
+				if(pauseClicked){
+					timeBeforePause += tock();
+					pauseClicked = false;
+				}
+					
 			}
 		} catch(InterruptedException e){
 			System.err.println(e);

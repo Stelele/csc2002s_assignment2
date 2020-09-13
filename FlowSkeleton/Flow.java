@@ -2,6 +2,7 @@ package FlowSkeleton;
 
 import javax.swing.*;
 import java.awt.Dimension;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -9,20 +10,9 @@ import java.awt.event.MouseEvent;
 import java.awt.BorderLayout;
 
 public class Flow {
-	static long startTime = 0;
 	static int frameX;
 	static int frameY;
 	static FlowPanel fp;
-
-	// start timer
-	private static void tick(){
-		startTime = System.currentTimeMillis();
-	}
-	
-	// stop timer, return time elapsed in seconds
-	private static float tock(){
-		return (System.currentTimeMillis() - startTime) / 1000.0f; 
-	}
 	
 	public static void setupGUI(int frameX,int frameY,Terrain landdata, Water waterData) {
 		
@@ -32,11 +22,14 @@ public class Flow {
     	frame.getContentPane().setLayout(new BorderLayout());
     	
       	JPanel g = new JPanel();
-        g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
+		g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
+		
+		//Adding Timer Label
+		JLabel timeElapsed = new JLabel("Time: 0.00s");
    
 		landdata.genPermute();
 
-		fp = new FlowPanel(landdata, waterData);
+		fp = new FlowPanel(landdata, waterData, timeElapsed);
 		fp.setPreferredSize(new Dimension(frameX,frameY));
 		g.add(fp);
 	    
@@ -49,7 +42,7 @@ public class Flow {
 		JButton resetB = new JButton("Reset");
 		resetB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				fp.clearWater();
+				fp.resetSimulation();
 				System.out.println("reset clicked");
 			}
 		});
@@ -90,11 +83,17 @@ public class Flow {
 				System.out.println(String.format("Mouse pressed col:%d, row:%d", e.getX(), e.getY()));
 			}
 		});
-		
+
 		b.add(resetB);
+		b.add(Box.createHorizontalGlue());
 		b.add(pauseB);
+		b.add(Box.createHorizontalGlue());
 		b.add(playB);
+		b.add(Box.createHorizontalGlue());
 		b.add(endB);
+		b.add(Box.createHorizontalGlue());
+		b.add(timeElapsed);
+
 		g.add(b);
     	
 		frame.setSize(frameX, frameY+50);	// a little extra space at the bottom for buttons

@@ -8,12 +8,14 @@ SRCDIR=FlowSkeleton
 BINDIR=bin
 OUTDIR=output
 OUTDOCS=docs
+DATA=data
 
 $(BINDIR)/%.class:$(SRCDIR)/%.java
 	javac -d $(BINDIR)/ -cp $(BINDIR) $<
 	
 CLASSES=Terrain.class \
 		Water.class \
+		WaterPainter.class \
 		FlowController.class \
 		FlowPanel.class \
 		Flow.class

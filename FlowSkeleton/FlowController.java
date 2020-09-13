@@ -25,8 +25,14 @@ public class FlowController extends Thread {
         int yStart = location[1] - 1;
         int yEnd = location[1] + 1;
 
+        int xdim = mounTerrain.getDimX();
+        int ydim = mounTerrain.getDimY();
+
         for(int i = xStart; i <= xEnd; i++){
             for(int j = yStart; j <= yEnd; j++){
+                if(i < 0 || j < 0 || i >= xdim || j >= ydim)
+                    continue;
+
                 float waterDepth = (water.getDepth(i, j)/100f) + mounTerrain.height[i][j];
 
                 if(minDepth > waterDepth){
