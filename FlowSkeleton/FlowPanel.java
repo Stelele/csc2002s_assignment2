@@ -2,6 +2,7 @@ package FlowSkeleton;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.concurrent.ForkJoinPool;
 
 import javax.swing.JPanel;
 
@@ -10,6 +11,8 @@ public class FlowPanel extends JPanel implements Runnable {
 	Water water; 
 	private boolean play;
 	private boolean exit;
+
+	static final ForkJoinPool fjpool = new ForkJoinPool();
 	
 	FlowPanel(Terrain terrain, Water waterData) {
 		land = terrain;
@@ -32,18 +35,11 @@ public class FlowPanel extends JPanel implements Runnable {
 		}
 
 		//draw blue boxes ontop reprsenting water
-		g.setColor(Color.BLUE);
-		int[] location = new int[2];
+		WaterPainter.g = g;
+		WaterPainter.land = land;
+		WaterPainter.water = water;
 
-		int sizes = width * height; 
-	
-		for(int i = 0; i < sizes; i++){
-			land.getPermute(i, location);
-
-			if(water.getDepth(location[0], location[1]) > 0){				
-				g.fillRect(location[0], location[1], 1, 1);
-			}
-		}
+		fjpool.invoke(new WaterPainter(0, land.dim())) 
 	}
 
 	public void pauseSimulation(){
