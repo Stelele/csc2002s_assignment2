@@ -25,7 +25,7 @@ public class Flow {
 		g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
 		
 		//Adding Timer Label
-		JLabel timeElapsed = new JLabel("Time: 0.00s");
+		JLabel timeElapsed = new JLabel("Steps: 0");
    
 		landdata.genPermute();
 

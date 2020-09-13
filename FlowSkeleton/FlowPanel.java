@@ -17,7 +17,7 @@ public class FlowPanel extends JPanel implements Runnable {
 	private boolean pauseClicked;
 
 	static long startTime;
-	float timeBeforePause;
+	long timeBeforePause;
 
 	static final ForkJoinPool fjpool = new ForkJoinPool();
 	
@@ -27,18 +27,19 @@ public class FlowPanel extends JPanel implements Runnable {
 		exit = false;
 		this.timelapsed = timelapsed;
 
-		timeBeforePause = 0f;
+		timeBeforePause = 0;
 		pauseClicked = false;
 	}
 
 	// start timer
 	private static void tick(){
-		startTime = System.currentTimeMillis();
+		startTime = 0;
 	}
 	
 	// stop timer, return time elapsed in seconds
-	private static float tock(){
-		return (System.currentTimeMillis() - startTime) / 1000.0f; 
+	private static long tock(){
+		startTime += 1;
+		return startTime; 
 	}
 		
 	// responsible for painting the terrain and water
@@ -79,9 +80,9 @@ public class FlowPanel extends JPanel implements Runnable {
 
 	public void resetSimulation(){
 		tick();
-		timeBeforePause = 0f;
+		timeBeforePause = 0;
 
-		timelapsed.setText("Time: 0.00s");
+		timelapsed.setText("Steps: 0");
 		water.clearWater();
 		repaint();
 	}
@@ -131,14 +132,14 @@ public class FlowPanel extends JPanel implements Runnable {
 					thirdQuarter.join();
 					fourthQuarter.join();
 
-					timelapsed.setText(String.format("Time: %.2fs", tock() + timeBeforePause));
+					timelapsed.setText(String.format("Steps: %d", tock() + timeBeforePause));
 
 					repaint();
 				
 				}
 
 				if(pauseClicked){
-					timeBeforePause += tock();
+					timeBeforePause += startTime;
 					pauseClicked = false;
 				}
 					
