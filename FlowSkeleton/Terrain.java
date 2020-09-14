@@ -87,7 +87,8 @@ public class Terrain {
 	void readData(String fileName){ 
 		try{ 
 			Scanner sc = new Scanner(new File(fileName));
-			sc.useLocale(Locale.US);
+			sc.useLocale(Locale.ROOT);
+
 			// read grid dimensions
 			// x and y correpond to columns and rows, respectively.
 			// Using image coordinate system where top left is (0, 0).
