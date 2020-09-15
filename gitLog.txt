@@ -1,0 +1,71 @@
+commit cec0b686b9d3a021f4ef8b575b3889d86b2da089
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Tue Sep 15 15:34:17 2020 +0200
+
+    Added javadoc comments
+
+commit 02b912e3f54f591934bb7a5cf9dee89d218334e6
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Mon Sep 14 21:41:27 2020 +0200
+
+    modified scanner to use '.' for reading in floats
+
+commit e80fcd0975dc85a6390bf6c89e8e19afe5c33c60
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Mon Sep 14 01:21:19 2020 +0200
+
+    changed timer module to show elapsed time in steps instead of seconds
+
+commit cf3487d17f72f594fc9906ae8ec5cd8d8ce40377
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Mon Sep 14 00:53:05 2020 +0200
+
+    Added Timer label to simulation
+
+commit ac682b3a400d3896ae50a6f18aaf396cfd667bd8
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Sun Sep 13 15:16:36 2020 +0200
+
+    implemented fork join to painting boxes to try and increase performance
+
+commit 79930b4b8e2b59ec986554e38f56153a8cff0cb0
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Sun Sep 13 14:55:29 2020 +0200
+
+    removed volatile headers to improve simulation performance
+
+commit fe6ad6bba033827a2e18b0dd0e254ea78445bb50
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Sat Sep 12 21:38:08 2020 +0200
+
+    got first instance of working simulation code but errors seem to be present at starting to be fixed
+
+commit 9b44b43809f4b6a068d8a97479966833e01f17f1
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Sat Sep 12 19:08:38 2020 +0200
+
+    added exit to loop if unused
+
+commit 85157b722e0ff04ae59c5043aba885c16f9b0e04
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Sat Sep 12 19:01:26 2020 +0200
+
+    Implemented fork join framework threads for passing through 4 segment chunks
+
+commit d22bde216d818b26022a8b9ff9fc0890032167c1
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Sat Sep 12 18:36:45 2020 +0200
+
+    added initial separate code
+
+commit 15adc1d204770fcc1adbb6169016b2e3e0410cdd
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Sat Sep 12 17:18:23 2020 +0200
+
+    added functionality for adding water drops on screen
+
+commit 28f443326dee777f622b19b3bea328313efbfc44
+Author: Stelele <giftmugweni@gmail.com>
+Date:   Thu Sep 10 21:19:34 2020 +0200
+
+    initial commit
