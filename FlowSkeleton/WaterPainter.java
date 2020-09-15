@@ -5,6 +5,9 @@ import java.util.concurrent.RecursiveAction;
 import java.awt.Color;
 import java.awt.Graphics;
 
+/**
+ * class responsimble for painting water possitions on GUI
+ */
 public class WaterPainter extends RecursiveAction {
     static Graphics g;
     static Terrain land;
@@ -14,6 +17,11 @@ public class WaterPainter extends RecursiveAction {
     private int start;
     private int end;
 
+    /**
+     * 
+     * @param start starting possition of Terrain perm list
+     * @param end ending possition of Terrain perm list
+     */
     WaterPainter(int start,int end){
         this.start = start;
         this.end = end;

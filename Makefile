@@ -25,9 +25,8 @@ CLASS_FILES=$(CLASSES:%.class=$(BINDIR)/%.class)
 default: $(CLASS_FILES)
 
 clean:
-	rm $(BINDIR)/*.class
-	rm $(OUTDIR)/*.csv
+	rm -r $(BINDIR)/*
+	rm -r $(OUTDOCS)/*
 
 doc:
-	rm $(OUTDOCS)/*
 	javadoc -d $(OUTDOCS)/ $(SRCDIR)/*.java $<

@@ -9,11 +9,21 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.BorderLayout;
 
+/**
+ * Main runner class responsible for showing the user View
+ */
 public class Flow {
 	static int frameX;
 	static int frameY;
 	static FlowPanel fp;
 	
+	/**
+	 * Function responsible setting up initial variables and GUI
+	 * @param frameX terrain width
+	 * @param frameY terrain height
+	 * @param landdata class containing terrain model
+	 * @param waterData class containing water model
+	 */
 	public static void setupGUI(int frameX,int frameY,Terrain landdata, Water waterData) {
 		
 		Dimension fsize = new Dimension(800, 800);
@@ -43,7 +53,6 @@ public class Flow {
 		resetB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				fp.resetSimulation();
-				System.out.println("reset clicked");
 			}
 		});
 
@@ -52,7 +61,6 @@ public class Flow {
 		pauseB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				fp.pauseSimulation();
-				System.out.println("Pause clicked");
 			}
 		});
 
@@ -61,7 +69,6 @@ public class Flow {
 		playB.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				fp.playSimulation();
-				System.out.println("Play clicked");
 			}
 		});
 
@@ -80,7 +87,6 @@ public class Flow {
 			@Override
 			public void mousePressed(MouseEvent e){
 				fp.addWater(e.getX(), e.getY());
-				System.out.println(String.format("Mouse pressed col:%d, row:%d", e.getX(), e.getY()));
 			}
 		});
 
@@ -104,15 +110,17 @@ public class Flow {
         Thread fpt = new Thread(fp);
 		fpt.start();
 	}
-	
-		
+	/**
+	 * Main method which is point of entry for user
+	 * @param args[0] Location of input terrain data
+	 */
 	public static void main(String[] args) {
 		Terrain landdata = new Terrain();
 
 		// check that number of command line arguments is correct
 		if(args.length != 1)
 		{
-			System.out.println("Incorrect number of command line arguments. Should have form: java -jar flow.java intputfilename");
+			System.out.println("Incorrect number of command line arguments. Should have form: java FlowSkeleton.Flow intputfilename");
 			System.exit(0);
 		}
 				

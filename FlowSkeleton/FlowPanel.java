@@ -7,6 +7,9 @@ import java.util.concurrent.ForkJoinPool;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * class responsible for refreshing the view and starting handling the moving water simulation
+ */
 public class FlowPanel extends JPanel implements Runnable {
 	Terrain land;
 	Water water; 
@@ -21,6 +24,12 @@ public class FlowPanel extends JPanel implements Runnable {
 
 	static final ForkJoinPool fjpool = new ForkJoinPool();
 	
+	/**
+	 * 
+	 * @param terrain underlying terrain model
+	 * @param waterData underlying water model
+	 * @param timelapsed timestep label shown on GUI
+	 */
 	FlowPanel(Terrain terrain, Water waterData, JLabel timelapsed) {
 		land = terrain;
 		water = waterData;
@@ -32,11 +41,18 @@ public class FlowPanel extends JPanel implements Runnable {
 	}
 
 	// start timer
+	/**
+	 * Record time of when the play button was clicked
+	 */
 	private static void tick(){
 		startTime = 0;
 	}
 	
 	// stop timer, return time elapsed in seconds
+	/**
+	 * 
+	 * @return starttime += 1
+	 */
 	private static long tock(){
 		startTime += 1;
 		return startTime; 
@@ -64,20 +80,32 @@ public class FlowPanel extends JPanel implements Runnable {
 		fjpool.invoke(new WaterPainter(0, land.dim()));
 	}
 
+	/**
+	 * Pauses simulation when Pause button is clicked
+	 */
 	public void pauseSimulation(){
 		play = false;
 		pauseClicked = true;
 	}
 
+	/**
+	 * Starts simulation when Play button is clicked
+	 */
 	public void playSimulation(){
 		tick();
 		play = true;
 	}
 
+	/**
+	 * End simulation 
+	 */
 	public void exitSimulation(){
 		exit = true;
 	}
 
+	/**
+	 * Resets the simulation 
+	 */
 	public void resetSimulation(){
 		tick();
 		timeBeforePause = 0;
@@ -87,6 +115,11 @@ public class FlowPanel extends JPanel implements Runnable {
 		repaint();
 	}
 	
+	/**
+	 * Function that adds water at clicked terrain possition
+	 * @param x clicked column location
+	 * @param y clicked row location
+	 */
 	public void addWater(int x, int y){
 		int width = land.getDimX();
 		int height = land.getDimY();
@@ -99,11 +132,17 @@ public class FlowPanel extends JPanel implements Runnable {
 		repaint();
 	}
 
+	/**
+	 * Remove all water in Water model
+	 */
 	public void clearWater(){
 		water.clearWater();
 		repaint();
 	}
 
+	/**
+	 * Method run by starting thread
+	 */
 	public void run() {	
 
 		int linearPermListSize = land.dim();

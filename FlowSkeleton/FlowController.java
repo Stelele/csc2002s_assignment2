@@ -1,5 +1,8 @@
 package FlowSkeleton;
 
+/**
+ * Class that handles the moving of water in the Water model for simulation
+ */
 public class FlowController extends Thread {
     static Terrain mounTerrain;
     static Water water;
@@ -7,11 +10,20 @@ public class FlowController extends Thread {
     int startPos;
     int endPos;
 
+    /**
+     * 
+     * @param startPos Starting possition of assigned Terrain perm variable list
+     * @param endPos Ending possition of assigned perm variable list
+     */
     FlowController(int startPos, int endPos){
         this.startPos = startPos;
         this.endPos = endPos;
     }
 
+    /**
+     * Function that checks for lowest neighbor around surroundings and moves water there
+     * @param location array size 2 containing colum and row position in locations 0 and 1 respectively
+     */
     public void moveWater(int[] location){
         if(water.getDepth(location[0], location[1]) <= 0)
             return;
